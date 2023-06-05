@@ -1,0 +1,35 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.calendar__title {
+  display: flex;
+  justify-content: center;
+}
+.calendar__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.calendar__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 10px;
+}
+.calendar__grid {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: 40px 40px 40px 40px 40px 40px 40px;
+}
+.calendar__cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid red;
+  cursor: pointer;
+}
