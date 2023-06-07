@@ -174,11 +174,26 @@ class Calendar {
 					break
 				case (currentValue == this.selectedValue[0]):
 					clearDaysHover()
+					this.#removeHoverSelected()
 
 					break
 			}
 
 			return
+		}
+
+		if (event.target.closest('.gridbody__prev')) {
+			clearDaysHover()
+			drawDaysHover(this.daysArray[0].value, this.selectedValue[0])
+			this.#removeHoverSelected()
+			this.selectedEl.classList.add('gridbody__day-selectright')
+		}
+
+		if (event.target.closest('.gridbody__next')) {
+			clearDaysHover()
+			drawDaysHover(this.selectedValue[0], this.daysArray.at(-1).value)
+			this.#removeHoverSelected()
+			this.selectedEl.classList.add('gridbody__day-selectleft')
 		}
 	}
 
