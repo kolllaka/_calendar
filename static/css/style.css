@@ -154,5 +154,10 @@
 }
 .gridbody__prev, .gridbody__next {
   color: rgb(190, 190, 190);
-  cursor: all-scroll;
+}
+.gridbody__prev {
+  cursor: url("../img/arrow-left.png"), auto;
+}
+.gridbody__next {
+  cursor: url("../img/arrow-right.png"), auto;
 }

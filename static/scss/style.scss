@@ -203,7 +203,11 @@ $linearGradient: linear-gradient(purple,blue);
 	&__prev,
 	&__next {
 		color: $gray;
-		// ! change
-		cursor: all-scroll;
+	}
+	&__prev{
+		cursor: url('../img/arrow-left.png'), auto;
+	}
+	&__next{
+		cursor: url('../img/arrow-right.png'), auto;
 	}
 }
