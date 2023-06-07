@@ -9,7 +9,8 @@ class Calendar {
 
 		this.year = 2023;
 		this.month = 11;
-		this.selectedValue;
+		this.selectedValue = [];
+		this.selectedEl
 		this.daysArray;
 
 		this.#render();
@@ -30,16 +31,31 @@ class Calendar {
 		this.daysArray = this.#daysArray();
 		this.$el.querySelector('.gridbody__web').innerHTML = this.daysArray.map((el) => {
 			let day = new Date(el.value * 1000)
+			let selected = ""
+			if (el.value == this.selectedValue[0] && el.style == "gridbody__day") {
+				selected = "gridbody__day-select"
+			}
 
 			return `
-			<div class="gridbody__cell ${el.style}" data-value="${el.value}">${day.getDate()}</div>
+			<div class="gridbody__cell ${selected} ${el.style}" data-value="${el.value}">${day.getDate()}</div>
 			`
 		}).join('')
+
+		if (this.selectedValue[0]) {
+			this.$el.querySelectorAll('.gridbody__day').forEach((el) => {
+				if (el.dataset.value == this.selectedValue[0]) {
+					this.selectedEl = el
+				}
+			})
+		}
 	}
 
 	#setup() {
 		this.buttonClickHandler = this.buttonClickHandler.bind(this);
 		this.$el.addEventListener('click', this.buttonClickHandler)
+
+		this.buttonHoverHandler = this.buttonHoverHandler.bind(this);
+		this.$el.addEventListener('mouseover', this.buttonHoverHandler)
 	}
 
 	#daysArray() {
@@ -72,7 +88,6 @@ class Calendar {
 
 		time = new Date(this.year, this.month, lenghtOfMonth)
 		day = getHumanDay(time.getDay())
-		this.selectedValue = Math.floor(time / 1000)
 
 		let k = 1
 		if (day != 6) {
@@ -93,6 +108,8 @@ class Calendar {
 
 		// next button on Calendar
 		if (event.target.closest('.calendar__next') || event.target.closest('.gridbody__next')) {
+			console.log(this.selectedValue);
+
 			event.preventDefault();
 			if (this.month == 11) {
 				this.month = 0
@@ -107,6 +124,7 @@ class Calendar {
 
 		// prev button on Calendar
 		if (event.target.closest('.calendar__prev') || event.target.closest('.gridbody__prev')) {
+			console.log(this.selectedValue);
 			event.preventDefault();
 			if (this.month == 0) {
 				this.month = 11
@@ -118,6 +136,56 @@ class Calendar {
 			this.#update()
 			return
 		}
+
+		if (event.target.closest('.gridbody__day')) {
+			this.selectedValue[0] = event.target.dataset.value
+
+			if (this.selectedEl) {
+				this.selectedEl.classList.remove('gridbody__day-select')
+				this.#removeHoverSelected()
+			}
+			this.selectedEl = event.target
+
+			clearDaysHover()
+			event.target.classList.add('gridbody__day-select')
+
+			return
+		}
+
+	}
+
+	buttonHoverHandler(event) {
+		if (event.target.closest('.gridbody__day')) {
+			clearDaysHover()
+			let currentValue = event.target.dataset.value
+
+			switch (true) {
+				case (currentValue < this.selectedValue[0]):
+					drawDaysHover(currentValue, this.selectedValue[0])
+					this.#removeHoverSelected()
+					this.selectedEl.classList.add('gridbody__day-selectright')
+
+					break
+				case (currentValue > this.selectedValue[0]):
+					drawDaysHover(this.selectedValue[0], currentValue)
+					this.#removeHoverSelected()
+					this.selectedEl.classList.add('gridbody__day-selectleft')
+
+					break
+				case (currentValue == this.selectedValue[0]):
+					clearDaysHover()
+
+					break
+			}
+
+			return
+		}
+	}
+
+	#removeHoverSelected() {
+		this.selectedEl.classList.remove('gridbody__day-hover')
+		this.selectedEl.classList.remove('gridbody__day-selectleft')
+		this.selectedEl.classList.remove('gridbody__day-selectright')
 	}
 }
 
@@ -175,4 +243,22 @@ const calenderTemplate = () => {
 		</div>
 	</div>
 	`
+}
+
+const clearDaysHover = () => {
+	document.querySelectorAll('.gridbody__day').forEach((day) => {
+		if (day.classList.contains('gridbody__day-hover')) {
+			day.classList.remove('gridbody__day-hover')
+		}
+	})
+}
+
+const drawDaysHover = (startVal, endVal) => {
+	document.querySelectorAll('.gridbody__day').forEach((day) => {
+		let currentValue = day.dataset.value
+
+		if (startVal <= currentValue && endVal >= currentValue) {
+			day.classList.add('gridbody__day-hover')
+		}
+	})
 }
