@@ -4,45 +4,214 @@
 	box-sizing: border-box;
 }
 
-$cellWidth: 40px;
+$cellWidth: auto;
+
+$gray: rgb(190, 190, 190);
+$purple: rgb(189, 124, 189);
+$linearGradient: linear-gradient(purple,blue);
+
+.wrapper {
+	display: flex;
+	// justify-content: center;
+	// align-items: center;
+	// //flex-direction: column;
+	width: 1060px;
+	margin: 0 auto;
+}
+
+.content{
+	width: 100%;
+	margin: 30px auto;
+	position: relative;
+	&__calendar{
+		width: 350px;
+	}
+}
+
 
 .calendar {
-	// .calendar__title
-	&__title {
-		display: flex;
-		justify-content: center;
-	}
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
 
-	// .calendar__body
-	&__body {
+	display: flex;
+	flex-direction: column;
+	padding: 15px;
+	border: 1px solid $gray;
+	border-radius: 5px;
+
+	// .calendar__header
+	&__header {
 		display: flex;
+		justify-content: space-between;
 		align-items: center;
-		justify-content: center;
+		margin-bottom: 20px;
 	}
 	
+	// .calendar__body
+	&__body {
+		margin-bottom: 20px;
+	}
+
+	// .calendar__footer
+	&__footer{
+	}
+
+	// .calendar__btns
+	&__btns {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	// .calendar__prev
+	&__prev {
+	}
+
+	// .calendar__title
+	&__title {
+		font-size: 25px;
+		font-weight: bold;
+	}
+
+	// .calendar__next
+	&__next {
+	}
+
 	// .calendar__btn
-	&__btn{
+	&__btn {
+		text-transform: uppercase;
+		text-decoration: none;
+		padding: 2px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		color: $purple;
 		cursor: pointer;
-		padding: 10px;
+		&:hover{
+			opacity: 0.8;
+		}
+		&:active{
+			opacity: 0.5;
+		}
 	}
+}
 
-	// .calendar__grid
-	&__grid {
+.gridbody {
+
+	// .gridbody__row
+	&__row {
 		display: grid;
-		gap: 2px;
+		row-gap: 4px;
 		grid-template-columns: $cellWidth $cellWidth $cellWidth $cellWidth $cellWidth $cellWidth $cellWidth;
 	}
 
-	// .calendar__cell
+	// .gridbody__cell
 	&__cell {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		padding: 10px;
-		border: 1px solid red;
-		cursor: pointer;
+	}
+
+	// .gridbody__cell
+	&__cell {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 10px;
+		aspect-ratio: 1 / 1;
+	}
+
+	// .gridbody__cellname
+	&__cellname{
+		color: $purple;
+	}
+
+		// .gridbody__day
+		&__day{
+			color: black;
+			cursor: pointer;
+			&:hover{
+				opacity: 0.8;
+			}
+			&:active{
+				opacity: 0.5;
+			}
+			&-select{
+				position: relative;
+				z-index: 10;
+				background: $linearGradient;
+				border-radius: 50%;
+				color: white;
+			}
+			&-selectleft{
+				position: relative;
+				z-index: 10;
+				background: $linearGradient;
+				border-radius: 50%;
+				color: white;
+				&::before{
+					content: "";
+					top: 0;
+					bottom: 0;
+					left: 50%;
+					right: 0;
+					background: $linearGradient;
+					z-index: -1;
+					position: absolute;
+					opacity: 0.5;
+				}
+			}
+			&-selectright{
+				position: relative;
+				z-index: 10;
+				background: $linearGradient;
+				border-radius: 50%;
+				color: white;
+				&::after{
+					content: "";
+					top: 0;
+					bottom: 0;
+					right: 50%;
+					left: 0;
+					background: $linearGradient;
+					z-index: -1;
+					position: absolute;
+					opacity: 0.5;
+				}
+			}
+			&-hover{
+				position: relative;
+				z-index: 10;
+				&::after,
+				&::before{
+					content: "";
+					top: 0;
+					bottom: 0;
+					background: $linearGradient;
+					z-index: -1;
+					position: absolute;
+					opacity: 0.5;
+				}
+				&::after{
+					left: 0;
+					right: 50%;
+				}
+				&::before{
+					left: 50%;
+					right: 0;
+				}
+			}
+		}
+
+	// .gridbody__next
+	// .gridbody__prev
+	&__prev,
+	&__next {
+		color: $gray;
+		// ! change
+		cursor: all-scroll;
 	}
 }

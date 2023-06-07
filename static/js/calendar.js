@@ -13,7 +13,9 @@ class Calendar {
 		this.daysArray;
 
 		this.#render();
-		this.update();
+		this.#update();
+
+		this.#setup();
 	}
 
 	#render() {
@@ -21,7 +23,7 @@ class Calendar {
 		this.$el.innerHTML = calenderTemplate();
 	}
 
-	update() {
+	#update() {
 		// set title
 		this.$el.querySelector('.calendar__title').innerText = `${constNameOfMonth[this.month] ?? ""} ${this.year ?? ""}`;
 
@@ -35,22 +37,20 @@ class Calendar {
 		}).join('')
 	}
 
+	#setup() {
+		this.buttonClickHandler = this.buttonClickHandler.bind(this);
+		this.$el.addEventListener('click', this.buttonClickHandler)
+	}
+
 	#daysArray() {
 		let arrayOfMonth = [];
 		let time = new Date(this.year, this.month, 1);
 		let day = getHumanDay(time.getDay());
 
-		console.log(this.$el);
-
-
-		console.log(`month: ${this.month}, year: ${this.year}`);
-
-		console.log(`month unix time 1685566800: ${Math.floor(time / 1000)}`);
-		console.log(`день недели: ${day} ${constWeek[day]}`);
 		for (let index = day + 1; index > 1; index--) {
 			arrayOfMonth.push({
 				value: Math.floor(time / 1000) - index * 86400,
-				style: "gridbody__gray",
+				style: "gridbody__prev",
 			})
 		}
 
@@ -74,23 +74,51 @@ class Calendar {
 		day = getHumanDay(time.getDay())
 		this.selectedValue = Math.floor(time / 1000)
 
-		console.log(`ласт день недели: ${day} ${constWeek[day]}`);
 		let k = 1
 		if (day != 6) {
 			for (let index = day + 1; index < 7; index++) {
 				arrayOfMonth.push({
 					value: Math.floor(time / 1000) + k * 86400,
-					style: "gridbody__gray",
+					style: "gridbody__next",
 				})
 
 				k++
 			}
 		}
 
-		console.log("array:", arrayOfMonth);
 		return arrayOfMonth
 	}
 
+	buttonClickHandler(event) {
+
+		// next button on Calendar
+		if (event.target.closest('.calendar__next') || event.target.closest('.gridbody__next')) {
+			event.preventDefault();
+			if (this.month == 11) {
+				this.month = 0
+				this.year++
+			} else {
+				this.month++
+			}
+
+			this.#update()
+			return
+		}
+
+		// prev button on Calendar
+		if (event.target.closest('.calendar__prev') || event.target.closest('.gridbody__prev')) {
+			event.preventDefault();
+			if (this.month == 0) {
+				this.month = 11
+				this.year--
+			} else {
+				this.month--
+			}
+
+			this.#update()
+			return
+		}
+	}
 }
 
 const getHumanDay = (day) => {

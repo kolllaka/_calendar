@@ -12,27 +12,27 @@ if (calendarBtns) {
 	})
 }
 
-let calendarNextBtn = document.querySelector('.calendar__next');
-let calendarPrevBtn = document.querySelector('.calendar__prev');
+// let calendarNextBtn = document.querySelector('.calendar__next');
+// let calendarPrevBtn = document.querySelector('.calendar__prev');
 
-calendarNextBtn.addEventListener('click', (e) => {
-	if (calendar.month == 11) {
-		calendar.month = 0
-		calendar.year++
-	} else {
-		calendar.month++
-	}
+// calendarNextBtn.addEventListener('click', (e) => {
+// 	if (calendar.month == 11) {
+// 		calendar.month = 0
+// 		calendar.year++
+// 	} else {
+// 		calendar.month++
+// 	}
 
-	calendar.update()
-})
+// 	calendar.update()
+// })
 
-calendarPrevBtn.addEventListener('click', (e) => {
-	if (calendar.month == 0) {
-		calendar.month = 11
-		calendar.year--
-	} else {
-		calendar.month--
-	}
+// calendarPrevBtn.addEventListener('click', (e) => {
+// 	if (calendar.month == 0) {
+// 		calendar.month = 11
+// 		calendar.year--
+// 	} else {
+// 		calendar.month--
+// 	}
 
-	calendar.update()
-})
+// 	calendar.update()
+// })

@@ -160,6 +160,7 @@
   left: 50%;
   right: 0;
 }
-.gridbody__gray {
+.gridbody__prev, .gridbody__next {
   color: rgb(190, 190, 190);
+  cursor: all-scroll;
 }
