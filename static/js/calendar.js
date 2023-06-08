@@ -64,7 +64,7 @@ class Calendar {
 
 		for (let index = day + 1; index > 1; index--) {
 			arrayOfMonth.push({
-				value: Math.floor(time / 1000) - index * 86400,
+				value: Math.floor(time / 1000) - (index - 1) * 86400,
 				style: "gridbody__prev",
 			})
 		}
