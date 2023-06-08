@@ -71,10 +71,7 @@ class Calendar {
 
 		let lenghtOfMonth = constMonth[this.month]
 		if ((this.month == 1) && (this.year % 4 == 0)) {
-			console.log('високосный год');
-
 			lenghtOfMonth++
-			console.log(lenghtOfMonth);
 		}
 
 
@@ -107,8 +104,6 @@ class Calendar {
 
 		// next button on Calendar
 		if (event.target.closest('.calendar__next') || event.target.closest('.gridbody__next')) {
-			console.log(this.selectedValue);
-
 			event.preventDefault();
 			if (this.month == 11) {
 				this.month = 0
@@ -123,7 +118,6 @@ class Calendar {
 
 		// prev button on Calendar
 		if (event.target.closest('.calendar__prev') || event.target.closest('.gridbody__prev')) {
-			console.log(this.selectedValue);
 			event.preventDefault();
 			if (this.month == 0) {
 				this.month = 11
