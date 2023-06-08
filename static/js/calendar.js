@@ -163,6 +163,20 @@ class Calendar {
 			return
 		}
 
+		if (event.target.closest('.calendar__clear')) {
+			event.preventDefault()
+			this.selectedValue = []
+			this.#update()
+
+			return
+		}
+
+		if (event.target.closest('.calendar__submit')) {
+			event.preventDefault()
+
+			return
+		}
+
 	}
 
 	buttonHoverHandler(event) {
@@ -172,10 +186,12 @@ class Calendar {
 
 			switch (true) {
 				case (currentValue < this.selectedValue[0]):
+					this.#clearDaysHover()
 					this.#drawDaysHover(currentValue, this.selectedValue[0], false, true)
 
 					break
 				case (currentValue > this.selectedValue[0]):
+					this.#clearDaysHover()
 					this.#drawDaysHover(this.selectedValue[0], currentValue, true, false)
 
 					break
@@ -191,11 +207,15 @@ class Calendar {
 		if (event.target.closest('.gridbody__prev')) {
 			this.#clearDaysHover()
 			this.#drawDaysHover(this.daysArray[0].value, this.selectedValue[0], false, true)
+
+			return
 		}
 
 		if (event.target.closest('.gridbody__next')) {
 			this.#clearDaysHover()
 			this.#drawDaysHover(this.selectedValue[0], this.daysArray.at(-1).value, true, false)
+
+			return
 		}
 	}
 
@@ -204,6 +224,12 @@ class Calendar {
 		this.$el.querySelectorAll('.gridbody__day').forEach((day) => {
 			if (day.classList.contains('gridbody__day-hover')) {
 				day.classList.remove('gridbody__day-hover')
+			}
+			if (day.classList.contains('gridbody__day-selectleft')) {
+				day.classList.remove('gridbody__day-selectleft')
+			}
+			if (day.classList.contains('gridbody__day-selectright')) {
+				day.classList.remove('gridbody__day-selectright')
 			}
 		})
 	}
@@ -275,10 +301,10 @@ const calenderTemplate = () => {
 
 	<div class="calendar__footer">
 		<div class="calendar__btns">
-			<a href="#" class="calendar__btn">
+			<a href="#" class="calendar__btn calendar__clear">
 				очистить
 			</a>
-			<a href="#" class="calendar__btn">
+			<a href="#" class="calendar__btn calendar__submit">
 				применить
 			</a>
 		</div>
