@@ -55,7 +55,7 @@ class Calendar {
 		this.$el.addEventListener('click', this.buttonClickHandler)
 
 		this.buttonHoverHandler = this.buttonHoverHandler.bind(this);
-		this.$el.addEventListener('mouseover', this.buttonHoverHandler)
+
 	}
 
 	#daysArray() {
@@ -137,17 +137,36 @@ class Calendar {
 			return
 		}
 
+		// day button on Calendar
 		if (event.target.closest('.gridbody__day')) {
-			this.selectedValue[0] = event.target.dataset.value
+			if (this.selectedValue[1]) {
+				this.selectedValue = []
+				this.selectedEl = undefined
+				calendar.#update()
 
-			if (this.selectedEl) {
-				this.selectedEl.classList.remove('gridbody__day-select')
-				this.#removeHoverSelected()
+				return
 			}
-			this.selectedEl = event.target
 
-			clearDaysHover()
-			event.target.classList.add('gridbody__day-select')
+			if (!this.selectedValue[0]) {
+				this.$el.addEventListener('mouseover', this.buttonHoverHandler)
+				this.selectedValue[0] = event.target.dataset.value
+
+				if (this.selectedEl) {
+					this.selectedEl.classList.remove('gridbody__day-select')
+					this.#removeHoverSelected()
+				}
+				this.selectedEl = event.target
+
+				this.#clearDaysHover()
+				event.target.classList.add('gridbody__day-select')
+			} else {
+				this.$el.removeEventListener('mouseover', this.buttonHoverHandler)
+				this.selectedValue[1] = event.target.dataset.value
+				event.target.classList.add('gridbody__day-select')
+				this.selectedValue = this.selectedValue.sort()
+				this.#clearDaysHover()
+				this.#drawDaysHover(this.selectedValue[0], this.selectedValue[1], true, true)
+			}
 
 			return
 		}
@@ -156,12 +175,12 @@ class Calendar {
 
 	buttonHoverHandler(event) {
 		if (event.target.closest('.gridbody__day')) {
-			clearDaysHover()
+			this.#clearDaysHover()
 			let currentValue = event.target.dataset.value
 
 			switch (true) {
 				case (currentValue < this.selectedValue[0]):
-					drawDaysHover(currentValue, this.selectedValue[0])
+					this.#drawDaysHover(currentValue, this.selectedValue[0], false, true)
 					if (this.selectedEl) {
 						this.#removeHoverSelected()
 						this.selectedEl.classList.add('gridbody__day-selectright')
@@ -169,7 +188,7 @@ class Calendar {
 
 					break
 				case (currentValue > this.selectedValue[0]):
-					drawDaysHover(this.selectedValue[0], currentValue)
+					this.#drawDaysHover(this.selectedValue[0], currentValue, true, false)
 					if (this.selectedEl) {
 						this.#removeHoverSelected()
 						this.selectedEl.classList.add('gridbody__day-selectleft')
@@ -177,7 +196,7 @@ class Calendar {
 
 					break
 				case (currentValue == this.selectedValue[0]):
-					clearDaysHover()
+					this.#clearDaysHover()
 					if (this.selectedEl) {
 						this.#removeHoverSelected()
 					}
@@ -189,8 +208,8 @@ class Calendar {
 		}
 
 		if (event.target.closest('.gridbody__prev')) {
-			clearDaysHover()
-			drawDaysHover(this.daysArray[0].value, this.selectedValue[0])
+			this.#clearDaysHover()
+			this.#drawDaysHover(this.daysArray[0].value, this.selectedValue[0], false, true)
 			if (this.selectedEl) {
 				this.#removeHoverSelected()
 				this.selectedEl.classList.add('gridbody__day-selectright')
@@ -198,8 +217,8 @@ class Calendar {
 		}
 
 		if (event.target.closest('.gridbody__next')) {
-			clearDaysHover()
-			drawDaysHover(this.selectedValue[0], this.daysArray.at(-1).value)
+			this.#clearDaysHover()
+			this.#drawDaysHover(this.selectedValue[0], this.daysArray.at(-1).value, true, false)
 			if (this.selectedEl) {
 				this.#removeHoverSelected()
 				this.selectedEl.classList.add('gridbody__day-selectleft')
@@ -211,6 +230,35 @@ class Calendar {
 		this.selectedEl.classList.remove('gridbody__day-hover')
 		this.selectedEl.classList.remove('gridbody__day-selectleft')
 		this.selectedEl.classList.remove('gridbody__day-selectright')
+	}
+
+	#clearDaysHover() {
+		this.$el.querySelectorAll('.gridbody__day').forEach((day) => {
+			if (day.classList.contains('gridbody__day-hover')) {
+				day.classList.remove('gridbody__day-hover')
+			}
+		})
+	}
+
+	#drawDaysHover(startVal, endVal, isSelectedStart, isSelectedEnd) {
+		this.$el.querySelectorAll('.gridbody__day').forEach((day) => {
+			let currentValue = day.dataset.value
+
+			switch (true) {
+				case (isSelectedStart && currentValue == startVal):
+					day.classList.add('gridbody__day-selectleft')
+
+					break
+				case (isSelectedEnd && currentValue == endVal):
+					day.classList.add('gridbody__day-selectright')
+
+					break
+				case (startVal <= currentValue && endVal >= currentValue):
+					day.classList.add('gridbody__day-hover')
+
+					break
+			}
+		})
 	}
 }
 
@@ -268,22 +316,4 @@ const calenderTemplate = () => {
 		</div>
 	</div>
 	`
-}
-
-const clearDaysHover = () => {
-	document.querySelectorAll('.gridbody__day').forEach((day) => {
-		if (day.classList.contains('gridbody__day-hover')) {
-			day.classList.remove('gridbody__day-hover')
-		}
-	})
-}
-
-const drawDaysHover = (startVal, endVal) => {
-	document.querySelectorAll('.gridbody__day').forEach((day) => {
-		let currentValue = day.dataset.value
-
-		if (startVal <= currentValue && endVal >= currentValue) {
-			day.classList.add('gridbody__day-hover')
-		}
-	})
 }
