@@ -7,8 +7,9 @@ class Calendar {
 		this.$el = document.getElementById($selector);
 		this.mode = mode;
 
-		this.year = 2023;
-		this.month = 11;
+		let time = new Date()
+		this.year = time.getFullYear();
+		this.month = time.getMonth();
 		this.selectedValue = [];
 		this.daysArray;
 
@@ -157,6 +158,7 @@ class Calendar {
 			return
 		}
 
+		// clear button on Calendar
 		if (event.target.closest('.calendar__clear')) {
 			event.preventDefault()
 			this.selectedValue = []
@@ -165,6 +167,7 @@ class Calendar {
 			return
 		}
 
+		// submit button on Calendar
 		if (event.target.closest('.calendar__submit')) {
 			event.preventDefault()
 
