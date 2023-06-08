@@ -35,10 +35,18 @@ class Calendar {
 				selected = "gridbody__day-select"
 			}
 
+			if (this.selectedValue[1] && el.value == this.selectedValue[1] && el.style == "gridbody__day") {
+				selected = "gridbody__day-select"
+			}
+
 			return `
 			<div class="gridbody__cell ${selected} ${el.style}" data-value="${el.value}">${day.getDate()}</div>
 			`
 		}).join('')
+
+		if (this.selectedValue[1]) {
+			this.#drawDaysHover(this.selectedValue[0], this.selectedValue[1], true, true)
+		}
 	}
 
 	#setup() {
