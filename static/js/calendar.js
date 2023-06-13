@@ -234,6 +234,11 @@ class Calendar {
 	#drawDaysHover(startVal, endVal, isSelectedStart, isSelectedEnd) {
 		this.$el.querySelectorAll('.gridbody__day').forEach((day) => {
 			let currentValue = day.dataset.value
+			if (startVal == endVal && day.dataset.value == startVal) {
+				day.classList.add('gridbody__day-select')
+
+				return
+			}
 
 			switch (true) {
 				case (isSelectedStart && currentValue == startVal):
