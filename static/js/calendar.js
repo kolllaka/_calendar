@@ -3,9 +3,9 @@ const constMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
 	constNameOfMonth = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",]
 
 class Calendar {
-	constructor($selector, mode) {
+	constructor($selector, data) {
 		this.$el = document.getElementById($selector);
-		this.mode = mode;
+		this.data = data;
 
 		let time = new Date()
 		this.year = time.getFullYear();
@@ -20,13 +20,13 @@ class Calendar {
 	}
 
 	#render() {
-		this.$el.classList.add("calendar");
-		this.$el.innerHTML = calenderTemplate();
+		this.$el.querySelector('.calendar__datapicker').classList.add('datapicker')
+		this.$el.querySelector('.calendar__datapicker').innerHTML = calenderTemplate();
 	}
 
 	#update() {
 		// set title
-		this.$el.querySelector('.calendar__title').innerText = `${constNameOfMonth[this.month] ?? ""} ${this.year ?? ""}`;
+		this.$el.querySelector('.datapicker__title').innerText = `${constNameOfMonth[this.month] ?? ""} ${this.year ?? ""}`;
 
 		this.daysArray = this.#daysArray();
 		this.$el.querySelector('.gridbody__web').innerHTML = this.daysArray.map((el) => {
@@ -103,8 +103,8 @@ class Calendar {
 
 	buttonClickHandler(event) {
 
-		// next button on Calendar
-		if (event.target.closest('.calendar__next') || event.target.closest('.gridbody__next')) {
+		// next button on Datapicker
+		if (event.target.closest('.datapicker__next') || event.target.closest('.gridbody__next')) {
 			event.preventDefault();
 			if (this.month == 11) {
 				this.month = 0
@@ -117,8 +117,8 @@ class Calendar {
 			return
 		}
 
-		// prev button on Calendar
-		if (event.target.closest('.calendar__prev') || event.target.closest('.gridbody__prev')) {
+		// prev button on Datapicker
+		if (event.target.closest('.datapicker__prev') || event.target.closest('.gridbody__prev')) {
 			event.preventDefault();
 			if (this.month == 0) {
 				this.month = 11
@@ -131,11 +131,12 @@ class Calendar {
 			return
 		}
 
-		// day button on Calendar
+		// day button on Datapicker
 		if (event.target.closest('.gridbody__day')) {
 			if (this.selectedValue[1]) {
 				this.selectedValue = []
 				calendar.#update()
+				this.#markingDay()
 
 				return
 			}
@@ -143,6 +144,7 @@ class Calendar {
 			if (!this.selectedValue[0]) {
 				this.$el.addEventListener('mouseover', this.buttonHoverHandler)
 				this.selectedValue[0] = event.target.dataset.value
+				this.#markingDay()
 
 				this.#clearDaysHover()
 				event.target.classList.add('gridbody__day-select')
@@ -151,6 +153,8 @@ class Calendar {
 				this.selectedValue[1] = event.target.dataset.value
 				event.target.classList.add('gridbody__day-select')
 				this.selectedValue = this.selectedValue.sort()
+				this.#markingDay()
+
 				this.#clearDaysHover()
 				this.#drawDaysHover(this.selectedValue[0], this.selectedValue[1], true, true)
 			}
@@ -158,22 +162,30 @@ class Calendar {
 			return
 		}
 
-		// clear button on Calendar
-		if (event.target.closest('.calendar__clear')) {
+		// clear button on Datapicker
+		if (event.target.closest('.datapicker__clear')) {
 			event.preventDefault()
 			this.selectedValue = []
 			this.#update()
+			this.#markingDay()
 
 			return
 		}
 
-		// submit button on Calendar
-		if (event.target.closest('.calendar__submit')) {
+		// submit button on Datapicker
+		if (event.target.closest('.datapicker__submit')) {
 			event.preventDefault()
+			this.$el.querySelector('.calendar__inputs').classList.remove('show')
+			this.$el.querySelector('.calendar__datapicker').classList.remove('show')
 
 			return
 		}
 
+		// show Datapicker
+		if (event.target.closest('.calendar__label')) {
+			this.$el.querySelector('.calendar__inputs').classList.toggle('show')
+			this.$el.querySelector('.calendar__datapicker').classList.toggle('show')
+		}
 	}
 
 	buttonHoverHandler(event) {
@@ -216,7 +228,6 @@ class Calendar {
 		}
 	}
 
-
 	#clearDaysHover() {
 		this.$el.querySelectorAll('.gridbody__day').forEach((day) => {
 			if (day.classList.contains('gridbody__day-hover')) {
@@ -256,6 +267,47 @@ class Calendar {
 			}
 		})
 	}
+
+	#markingDay() {
+		const inputs = this.$el.querySelectorAll('.calendar__input')
+
+		switch (inputs.length) {
+			case 1:
+				switch (this.selectedValue.length) {
+					case 1:
+						inputs[0].innerHTML = `${getTimeFromUnixtime(this.selectedValue[0])}-`
+
+						break
+					case 2:
+						inputs[0].innerHTML = `${getTimeFromUnixtime(this.selectedValue[0])}-${getTimeFromUnixtime(this.selectedValue[1])}`
+
+						break
+					default:
+
+				}
+
+				break
+			case 2:
+				switch (this.selectedValue.length) {
+					case 1:
+						inputs[0].innerHTML = `${getTimeFromUnixtime(this.selectedValue[0])}`
+						inputs[1].innerHTML = `${this.data.placeholder}`
+
+						break
+					case 2:
+						inputs[0].innerHTML = `${getTimeFromUnixtime(this.selectedValue[0])}`
+						inputs[1].innerHTML = `${getTimeFromUnixtime(this.selectedValue[1])}`
+
+						break
+					default:
+						inputs[0].innerHTML = `${this.data.placeholder}`
+						inputs[1].innerHTML = `${this.data.placeholder}`
+				}
+
+				break
+			default:
+		}
+	}
 }
 
 const getHumanDay = (day) => {
@@ -269,24 +321,24 @@ const getHumanDay = (day) => {
 
 const calenderTemplate = () => {
 	return `
-	<div class="calendar__header">
-		<div class="calendar__btns">
-			<a href="#" class="calendar__btn calendar__prev">
+	<div class="datapicker__header">
+		<div class="datapicker__btns">
+			<a href="#" class="datapicker__btn datapicker__prev">
 				&#60;--
 			</a>
 		</div>
-		<div class="calendar__title">
+		<div class="datapicker__title">
 
 		</div>
-		<div class="calendar__btns">
-			<a href="#" class="calendar__btn calendar__next">
+		<div class="datapicker__btns">
+			<a href="#" class="datapicker__btn datapicker__next">
 				--&#62;
 			</a>
 		</div>
 	</div>
 
 	
-	<div class="calendar__body gridbody">
+	<div class="datapicker__body gridbody">
 		<div class="gridbody__row">
 			<div class="gridbody__cell gridbody__cellname">Пн</div>
 			<div class="gridbody__cell gridbody__cellname">Вт</div>
@@ -301,15 +353,33 @@ const calenderTemplate = () => {
 		</div>
 	</div>
 
-	<div class="calendar__footer">
-		<div class="calendar__btns">
-			<a href="#" class="calendar__btn calendar__clear">
+	<div class="datapicker__footer">
+		<div class="datapicker__btns">
+			<a href="#" class="datapicker__btn datapicker__clear">
 				очистить
 			</a>
-			<a href="#" class="calendar__btn calendar__submit">
+			<a href="#" class="datapicker__btn datapicker__submit">
 				применить
 			</a>
 		</div>
 	</div>
 	`
+}
+
+const getTimeFromUnixtime = (unixTime) => {
+	const date = new Date(unixTime * 1000)
+
+	let day = date.getDate()
+	let month = date.getMonth() + 1
+	let year = date.getFullYear()
+
+	if (day < 10) {
+		day = `0${day}`
+	}
+
+	if (month < 10) {
+		month = `0${month}`
+	}
+
+	return `${day}.${month}.${year}`
 }

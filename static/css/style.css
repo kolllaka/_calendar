@@ -20,35 +20,69 @@
 }
 
 .calendar {
+  position: relative;
+  width: 300px;
+}
+.calendar__inputs {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+}
+.calendar__inputs.show .calendar__input {
+  border-radius: 4px 4px 0 0;
+  border-bottom: 1px solid transparent;
+}
+.calendar__label {
+  width: 100%;
+}
+.calendar__input {
+  padding: 5px 10px;
+  border: 1px solid rgb(190, 190, 190);
+  border-radius: 4px;
+  width: 100%;
+}
+.calendar__datapicker {
+  width: 100%;
+}
+
+.datapicker {
   position: absolute;
-  top: 0;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
   flex-direction: column;
   padding: 15px;
   border: 1px solid rgb(190, 190, 190);
-  border-radius: 5px;
+  border-radius: 0 0 4px 4px;
+  display: none;
 }
-.calendar__header {
+.datapicker.show {
+  display: flex;
+}
+.datapicker__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  width: 100%;
 }
-.calendar__body {
+.datapicker__body {
   margin-bottom: 20px;
 }
-.calendar__btns {
+.datapicker__footer {
+  width: 100%;
+}
+.datapicker__btns {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.calendar__title {
+.datapicker__title {
   font-size: 25px;
   font-weight: bold;
 }
-.calendar__btn {
+.datapicker__btn {
   text-transform: uppercase;
   text-decoration: none;
   padding: 2px;
@@ -58,10 +92,10 @@
   color: rgb(189, 124, 189);
   cursor: pointer;
 }
-.calendar__btn:hover {
+.datapicker__btn:hover {
   opacity: 0.8;
 }
-.calendar__btn:active {
+.datapicker__btn:active {
   opacity: 0.5;
 }
 
