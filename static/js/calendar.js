@@ -20,8 +20,7 @@ class Calendar {
 	}
 
 	#render() {
-		this.$el.querySelector('.calendar__datapicker').classList.add('datapicker')
-		this.$el.querySelector('.calendar__datapicker').innerHTML = calenderTemplate();
+		this.$el.querySelector('.datapicker').innerHTML = calenderTemplate();
 	}
 
 	#update() {
@@ -135,7 +134,7 @@ class Calendar {
 		if (event.target.closest('.gridbody__day')) {
 			if (this.selectedValue[1]) {
 				this.selectedValue = []
-				calendar.#update()
+				this.#update()
 				this.#markingDay()
 
 				return
@@ -176,7 +175,7 @@ class Calendar {
 		if (event.target.closest('.datapicker__submit')) {
 			event.preventDefault()
 			this.$el.querySelector('.calendar__inputs').classList.remove('show')
-			this.$el.querySelector('.calendar__datapicker').classList.remove('show')
+			this.$el.querySelector('.datapicker').classList.remove('show')
 
 			return
 		}
@@ -184,7 +183,7 @@ class Calendar {
 		// show Datapicker
 		if (event.target.closest('.calendar__label')) {
 			this.$el.querySelector('.calendar__inputs').classList.toggle('show')
-			this.$el.querySelector('.calendar__datapicker').classList.toggle('show')
+			this.$el.querySelector('.datapicker').classList.toggle('show')
 		}
 	}
 
@@ -269,7 +268,7 @@ class Calendar {
 	}
 
 	#markingDay() {
-		const inputs = this.$el.querySelectorAll('.calendar__input')
+		const inputs = this.$el.querySelectorAll(`${this.data.class}`)
 
 		switch (inputs.length) {
 			case 1:
